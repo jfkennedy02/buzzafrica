@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>BuzzAfrica Landing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Cinzel', serif;
+      direction: rtl;
+    }
+
+    body {
+      background: #000;
+      position: relative;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20vh) scale(1.2); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    .center-btn {
+      position: absolute;
+      z-index: 1000;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #FF6600;
+      color: white;
+      padding: 20px 30px;
+      font-size: 22px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.05); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .maintenance {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #4A1C3E;
+      color: #FF6600;
+      overflow: hidden;
+      z-index: 2000;
+      animation: fadeIn 2s forwards;
+    }
+
+    .floating-text {
+      font-size: 2em;
+      white-space: nowrap;
+      position: absolute;
+      width: 100%;
+      top: 35%;
+      animation: floatText 20s linear infinite;
+      text-align: center;
+    }
+
+    @keyframes floatText {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+
+    #countdown {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      .center-btn {
+        font-size: 16px;
+        padding: 15px 20px;
+      }
+
+      .floating-text {
+        font-size: 1.2em;
+        top: 40%;
+      }
+
+      #countdown {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bgMusic" loop>
+    <source src="/MUSIC/Unveiling by SCOREWIZARDS_256k.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <button class="center-btn" id="enterBtn">👋WELCOME TO BUZZAFRICA CLICK ME😊</button>
+
+  <script>
+    const bubbles = 60;
+    const colors = ['#FF6600', '#FFC107', '#4A1C3E', '#00BCD4', '#E91E63', '#8BC34A'];
+
+    function createBubble(color, size, z = 0) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.top = `${Math.random() * 100}%`;
+      bubble.style.background = color;
+      bubble.style.animationDuration = `${5 + Math.random() * 10}s`;
+      bubble.style.zIndex = z;
+      document.body.appendChild(bubble);
+      return bubble;
+    }
+
+    for (let i = 0; i < bubbles; i++) {
+      createBubble(colors[Math.floor(Math.random() * colors.length)], Math.random() * 60 + 20);
+    }
+
+    document.getElementById('enterBtn').addEventListener('click', () => {
+      document.getElementById("bgMusic").play();
+      const bubbleElems = document.querySelectorAll('.bubble');
+      bubbleElems.forEach((bub) => {
+        bub.style.transition = 'all 1s ease-out';
+        const x = (Math.random() - 0.5) * 2000;
+        const y = (Math.random() - 0.5) * 2000;
+        bub.style.transform = `translate(${x}px, ${y}px) scale(0)`;
+        bub.style.opacity = '0';
+      });
+
+      document.getElementById('enterBtn').style.display = 'none';
+
+      setTimeout(() => {
+        const overlay = document.createElement('div');
+        overlay.className = 'maintenance';
+
+        for (let i = 0; i < 40; i++) {
+          createBubble('#ffffff11', Math.random() * 40 + 10, 0);
+        }
+
+        const msg = document.createElement('div');
+        msg.className = 'floating-text';
+        msg.innerText = 'THE BUZZAFRICA SITE IS CURRENTLY UNDER MAINTAINANCE/DEV SIT TIGHT AND RELAX AS WE WORK TO BRING YOU THE BEST USER EXPERIENCE';
+        overlay.appendChild(msg);
+
+        const countdown = document.createElement('div');
+        countdown.id = 'countdown';
+        overlay.appendChild(countdown);
+
+        document.body.appendChild(overlay);
+
+        // 🎯 FIXED END TIME: June 24, 2025 4:00 PM UTC
+        const endTime = 1750780841819;
+
+        function updateCountdown() {
+          const now = Date.now();
+          const timeLeft = endTime - now;
+
+          if (timeLeft <= 0) {
+            countdown.innerHTML = "We’ll be back soon!";
+            return;
+          }
+
+          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((timeLeft / (1000 * 60)) % 60);
+          const seconds = Math.floor((timeLeft / 1000) % 60);
+
+          countdown.innerHTML = `${days} Days : ${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+      }, 1200);
+    });
+  </script>
+
+</body>
+</html>
